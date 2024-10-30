@@ -1,12 +1,13 @@
 pub mod cli;
 mod representation;
-
-use iced;
-use iced::application::Update;
-use iced::widget::{container, row, text};
+mod svg_handling;
+use iced::application;
+use iced::widget::{container, row, svg, text};
 use iced::Element;
+use iced::Length::Fill;
 use iced::Result;
 use iced::Theme;
+use iced::{self, theme};
 use unified_chess_engine::array_engine::{ChessBoard, Piece, PieceType, Position};
 
 struct UserMove {
@@ -61,8 +62,10 @@ pub enum Message {
 }
 
 impl ChessApplication {
-    pub fn run(&mut self) -> Result {
-        iced::run(Self::title, Self::update, Self::view)
+    pub fn run(&mut self) -> iced::Result {
+        iced::application(Self::title, Self::update, Self::view)
+            .theme(Self::theme)
+            .run()
     }
     fn title(&self) -> String {
         String::from("Chess-rs")
@@ -81,9 +84,17 @@ impl ChessApplication {
     }
 
     fn view(&self) -> Element<'_, Message> {
+        let handle = svg::Handle::from_path(format!(
+            "{}/pieces/cburnett/bQ.svg",
+            env!("CARGO_MANIFEST_DIR")
+        ));
+
+        let svg = svg(handle).height(Fill).width(Fill);
+
         container(row![
             text("This should be left"),
-            text("This should be right")
+            text("This should be right"),
+            svg
         ])
         .padding(20)
         .into()
