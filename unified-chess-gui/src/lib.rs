@@ -1,4 +1,5 @@
 pub mod cli;
+mod representation;
 
 use iced;
 use iced::application::Update;
