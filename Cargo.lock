@@ -3323,6 +3323,10 @@ name = "unified-chess-server"
 version = "0.1.0"
 
 [[package]]
+name = "unified-chess-shared"
+version = "0.1.0"
+
+[[package]]
 name = "usvg"
 version = "0.42.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

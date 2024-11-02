@@ -16,9 +16,7 @@ fn main() {
             }
         }
     } else {
-        let mut application: ChessApplication = ChessApplication {
-            game_instance: None,
-        };
+        let mut application: ChessApplication = ChessApplication::new();
 
         application.run().expect("Error from iced.");
     }

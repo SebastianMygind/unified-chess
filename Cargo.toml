@@ -10,10 +10,11 @@ edition = "2021"
 members = [
     "unified-chess-engine",
     "unified-chess-gui",
-    "unified-chess-server"
+    "unified-chess-server",
+    "unified-chess-shared",
 ]
 
 [dependencies]
-unified-chess-engine = {path = "./unified-chess-engine"}
-unified-chess-gui = {path = "./unified-chess-gui"}
-unified-chess-server = {path = "./unified-chess-server"}
+unified-chess-engine = { path = "./unified-chess-engine" }
+unified-chess-gui = { path = "./unified-chess-gui" }
+unified-chess-server = { path = "./unified-chess-server" }

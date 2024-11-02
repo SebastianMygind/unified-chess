@@ -1,13 +1,16 @@
 pub mod cli;
+mod fen;
 mod representation;
 mod svg_handling;
+
 use iced::application;
-use iced::widget::{container, row, svg, text};
+use iced::widget::{column, container, row, svg, text};
 use iced::Element;
 use iced::Length::Fill;
 use iced::Result;
 use iced::Theme;
 use iced::{self, theme};
+use svg_handling::SvgPieces;
 use unified_chess_engine::array_engine::{ChessBoard, Piece, PieceType, Position};
 
 struct UserMove {
@@ -34,6 +37,18 @@ enum ColoredPieces {
 #[derive(Default)]
 pub struct ChessApplication {
     pub game_instance: Option<GameState>,
+    prefered_pieces: SvgPieces,
+}
+
+impl ChessApplication {
+    pub fn new() -> Self {
+        Self {
+            game_instance: None,
+            prefered_pieces: SvgPieces::default(),
+        }
+    }
+
+    //pub fn start_new_game(&mut self)
 }
 
 pub struct GameState {
@@ -84,16 +99,12 @@ impl ChessApplication {
     }
 
     fn view(&self) -> Element<'_, Message> {
-        let handle = svg::Handle::from_path(format!(
-            "{}/pieces/cburnett/bQ.svg",
-            env!("CARGO_MANIFEST_DIR")
-        ));
+        let handle = svg::Handle::from_memory(self.prefered_pieces.white_queen);
 
         let svg = svg(handle).height(Fill).width(Fill);
 
-        container(row![
-            text("This should be left"),
-            text("This should be right"),
+        container(column![
+            row![text("This should be left"), text("This should be right"),],
             svg
         ])
         .padding(20)

@@ -4,8 +4,6 @@ pub mod array_engine;
 mod bitboard_engine;
 mod fen;
 
-
-
 pub struct Position {
     x: u8, // Position file.
     y: u8, // Position rank.
@@ -32,10 +30,8 @@ trait ChessEngine: ChessState {
     fn perft(&self, depth: i64) -> Vec<(String, i64)>;
 }
 
-trait ChessState {
+pub trait ChessState {
     fn internal_state_to_fen(&self) -> String;
 
     fn fen_to_internal_state(fen: &str) -> Self;
 }
-
-
