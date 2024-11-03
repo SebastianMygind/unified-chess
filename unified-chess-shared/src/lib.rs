@@ -1,4 +1,6 @@
 pub mod shared_types {
+    use crate::chess_errors::MoveError;
+
     pub enum MoveData {
         CastlingMove,
         EnPassant,
@@ -55,4 +57,24 @@ pub mod shared_types {
         half_move_clock: u32,
         full_move_counter: u32,
     }
+
+    pub enum ClientMessages {
+        MakeMove(Move),
+        GetBestMoves,
+        GetPerft(i64),
+        GetState,
+    }
+
+    pub enum ResponseMessages {
+        MoveResponse(Result<ChessState, MoveError>),
+        State(ChessState),
+        BestMoves(Vec<RatedMove>),
+        PerftResult(Vec<(String, i64)>),
+    }
+}
+
+pub mod chess_errors {
+    pub struct MoveError {}
+
+    pub struct FenError {}
 }
