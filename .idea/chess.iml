@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/unified-chess-engine/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unified-chess-gui/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/unified-chess-server/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/unified-chess-shared/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/src/chessdep/chess/target" />
       <excludeFolder url="file://$MODULE_DIR$/src/unified-chess-engine/target" />
       <excludeFolder url="file://$MODULE_DIR$/target" />

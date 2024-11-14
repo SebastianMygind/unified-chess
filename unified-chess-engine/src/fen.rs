@@ -1,6 +1,3 @@
-use crate::array_engine::Color::{Black, White};
-use crate::array_engine::PieceType::{Bishop, King, Knight, Pawn, Queen, Rook};
-use crate::array_engine::{Board, Piece, Position, Square, COL_SIZE};
 
 const ROW_SIZE: usize = 8;
 const VALID_FEN_BOARD: [char; 21] = [

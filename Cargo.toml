@@ -18,3 +18,4 @@ members = [
 unified-chess-engine = { path = "./unified-chess-engine" }
 unified-chess-gui = { path = "./unified-chess-gui" }
 unified-chess-server = { path = "./unified-chess-server" }
+unified-chess-shared = { path = "./unified-chess-shared" }

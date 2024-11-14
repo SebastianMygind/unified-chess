@@ -11,7 +11,7 @@ use iced::Result;
 use iced::Theme;
 use iced::{self, theme};
 use svg_handling::SvgPieces;
-use unified_chess_engine::array_engine::{ChessBoard, Piece, PieceType, Position};
+use unified_chess_shared::shared_types::{ChessState, Piece, PieceType, Position};
 
 struct UserMove {
     start_position: Position,
@@ -53,7 +53,7 @@ impl ChessApplication {
 
 pub struct GameState {
     selected_square: Option<Coordinate>,
-    chess_board: ChessBoard,
+    chess_board: ChessState,
 }
 
 #[derive(Clone, Copy, Debug)]

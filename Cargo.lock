@@ -3301,6 +3301,7 @@ dependencies = [
  "unified-chess-engine",
  "unified-chess-gui",
  "unified-chess-server",
+ "unified-chess-shared",
 ]
 
 [[package]]
@@ -3308,6 +3309,7 @@ name = "unified-chess-engine"
 version = "0.1.0"
 dependencies = [
  "tokio",
+ "unified-chess-shared",
 ]
 
 [[package]]
@@ -3316,6 +3318,7 @@ version = "0.1.0"
 dependencies = [
  "iced",
  "unified-chess-engine",
+ "unified-chess-shared",
 ]
 
 [[package]]
