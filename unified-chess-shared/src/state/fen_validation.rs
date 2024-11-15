@@ -335,4 +335,10 @@ mod tests {
     fn move_counter4() {
         assert_eq!(is_move_counter_valid("-4"), false);
     }
+
+    #[test]
+
+    fn move_counter5() {
+        assert_eq!(is_move_counter_valid("0"), true);
+    }
 }
