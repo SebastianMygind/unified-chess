@@ -10,4 +10,8 @@ impl FenError {
     pub fn missing_argument(argument: FenArguments, fen_string: &str) -> Self {
         Self::new(FenErrorKind::MissingArgument(argument), fen_string)
     }
+
+    pub fn parser_error(arguments: FenArguments, given_string: &str) -> Self {
+        Self::new(FenErrorKind::ParserError(arguments), given_string)
+    }
 }

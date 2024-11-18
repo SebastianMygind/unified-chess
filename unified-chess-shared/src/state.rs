@@ -16,10 +16,10 @@ pub enum FenType {
 }
 
 #[derive(Debug)]
-struct FenState<'a> {
-    fen: &'a str,
+pub struct FenState<'a> {
+    pub fen: &'a str,
     fen_split: Split<'a, char>,
-    fen_part: Option<&'a str>,
+    pub fen_part: Option<&'a str>,
 }
 
 impl<'a> FenState<'a> {

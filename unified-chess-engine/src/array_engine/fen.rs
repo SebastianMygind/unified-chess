@@ -11,11 +11,7 @@ impl FenConversion for ChessState {
 
         let fen_state: FenState = FenState::new(fen);
 
-
-
-        let state: Self = ChessState::new();
-
-        Ok(Box::new(state))
+        todo!()
     }
 
     fn state_to_fen(&self) -> String {
@@ -31,13 +27,25 @@ impl FenConversion for ChessState {
     }
 }
 
-fn parse_fen_part<F, T>(fen_state: &mut FenState, parser: F, argument: FenArguments) -> Result<T, FenError>
-where F: Fn(&str) -> Option<T> {
-
-    let parsed_part: T = match parser(fen_state.fen_part.expect("Validated fen should have fen_part!")) {
+fn parse_fen_part<F, T>(
+    fen_state: &mut FenState,
+    parser: F,
+    argument: FenArguments,
+) -> Result<T, FenError>
+where
+    F: Fn(&str) -> Option<T>,
+{
+    let parsed_part: T = match parser(
+        fen_state
+            .fen_part
+            .expect("Validated fen should have fen_part!"),
+    ) {
         Some(parsed_part) => parsed_part,
         None => {
-            return Err(FenError::new(FenErrorKind::ParserError(argument), fen_state.fen))
+            return Err(FenError::new(
+                FenErrorKind::ParserError(argument),
+                fen_state.fen,
+            ))
         }
     };
 

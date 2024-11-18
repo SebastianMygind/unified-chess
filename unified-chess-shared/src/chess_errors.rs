@@ -15,6 +15,7 @@ pub enum FenErrorKind {
     InvalidArgument(FenArguments),
     MissingArgument(FenArguments),
     TooManyArguments,
+    ParserError(FenArguments),
 }
 
 #[derive(Debug)]
