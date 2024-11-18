@@ -1,22 +1,19 @@
+mod fen_parser;
+
 use crate::array_engine::ChessState;
 use unified_chess_shared::chess_errors::{FenArguments, FenError, FenErrorKind};
 use unified_chess_shared::shared_types::{ChessState as SharedState, Color};
-use unified_chess_shared::state::FenConversion;
+use unified_chess_shared::state::{FenConversion, FenState};
 
-impl FenConversion for ChessState<'_> {
+impl FenConversion for ChessState {
     fn fen_to_state(fen: &str) -> Result<Box<Self>, FenError> {
         _ = Self::is_fen_valid(fen)?;
 
-        let split_fen = fen.split(' ');
+        let fen_state: FenState = FenState::new(fen);
 
-        let state: Self = ChessState {
-            board: [[None; 8]; 8],
-            side_to_move: Color::White,
-            castling_ability: [true; 4],
-            en_passant_target_square: None,
-            half_move_clock: 0,
-            full_move_counter: 0,
-        };
+
+
+        let state: Self = ChessState::new();
 
         Ok(Box::new(state))
     }
@@ -32,4 +29,19 @@ impl FenConversion for ChessState<'_> {
     fn shared_state_to_state(shared_state: &SharedState) -> Self {
         todo!()
     }
+}
+
+fn parse_fen_part<F, T>(fen_state: &mut FenState, parser: F, argument: FenArguments) -> Result<T, FenError>
+where F: Fn(&str) -> Option<T> {
+
+    let parsed_part: T = match parser(fen_state.fen_part.expect("Validated fen should have fen_part!")) {
+        Some(parsed_part) => parsed_part,
+        None => {
+            return Err(FenError::new(FenErrorKind::ParserError(argument), fen_state.fen))
+        }
+    };
+
+    fen_state.update();
+
+    Ok(parsed_part)
 }
