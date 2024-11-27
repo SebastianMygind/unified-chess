@@ -16,6 +16,9 @@ pub fn is_position_valid(position: &str) -> bool {
         for char in rank_string.chars() {
             match char.to_digit(10) {
                 Some(digit) => {
+                    if digit == 0 {
+                        return false;
+                    }
                     file += digit;
                 }
 

@@ -1,4 +1,4 @@
-mod fen_strings;
+pub mod fen_strings;
 mod fen_validation;
 
 use crate::chess_errors::{FenArguments, FenError, FenErrorKind};
