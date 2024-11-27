@@ -3,25 +3,23 @@ use crate::array_engine::{
     BOARD_HEIGHT, BOARD_WIDTH, EMPTY_SQUARE, WHITE_BISHOP, WHITE_KING, WHITE_KNIGHT, WHITE_PAWN,
     WHITE_QUEEN, WHITE_ROOK,
 };
-use std::io::empty;
 use std::str::Chars;
-use unified_chess_shared::shared_types::Position;
 
 struct PositionIterator<'a> {
     fen_chars: Chars<'a>,
-    empty_remainder: Option<u32>,
+    empty_squares: Option<u32>,
 }
 
-impl PositionIterator<'_> {
-    fn new(fen: &str) -> PositionIterator {
+impl<'a> PositionIterator<'a> {
+    fn new(fen: &'a str) -> PositionIterator {
         Self {
             fen_chars: fen.chars(),
-            empty_remainder: None,
+            empty_squares: None,
         }
     }
 
-    fn update_remainder(&mut self) -> Option<i8> {
-        if let Some(remainder) = self.empty_remainder {
+    fn update_empty_squares(&mut self) -> Option<i8> {
+        if let Some(remainder) = self.empty_squares {
             self.update(remainder);
             Some(EMPTY_SQUARE)
         } else {
@@ -30,15 +28,25 @@ impl PositionIterator<'_> {
     }
 
     fn update(&mut self, remainder: u32) {
-        if remainder == 1 {
-            self.empty_remainder = None;
+        match remainder {
+            0 => unreachable!("Other checks should go into effect before 0 is reached!"),
+            1 => self.empty_squares = None,
+            _ => self.empty_squares = Some(remainder - 1),
         }
-        self.empty_remainder = Some(remainder - 1);
     }
 
     fn parse_next_char(&mut self, char: char) -> Option<i8> {
         if let Some(digit) = char.to_digit(10) {
-            self.empty_remainder = Some(digit - 1);
+            assert!(self.empty_squares.is_none());
+
+            if digit == 0 {
+                unreachable!("FEN input not sanitised for 0 chars in position string")
+            } else if digit == 1 {
+                self.empty_squares = None;
+                return Some(EMPTY_SQUARE);
+            }
+
+            self.empty_squares = Some(digit - 1);
             return Some(EMPTY_SQUARE);
         }
         Some(match char {
@@ -55,7 +63,6 @@ impl PositionIterator<'_> {
             'b' => BLACK_BISHOP,
             'n' => BLACK_KNIGHT,
             'p' => BLACK_PAWN,
-
             _ => return None,
         })
     }
@@ -65,28 +72,176 @@ impl Iterator for PositionIterator<'_> {
     type Item = i8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(piece) = self.update_remainder() {
-            return Some(piece);
+        if let Some(empty_square) = self.update_empty_squares() {
+            return Some(empty_square);
         }
-        self.parse_next_char(self.fen_chars.next()?)
+
+        let mut char = self.fen_chars.next()?;
+
+        if char == '/' {
+            char = self
+                .fen_chars
+                .next()
+                .expect("should be validated in fen_validator");
+        }
+
+        self.parse_next_char(char)
     }
 }
 
 pub fn parse_position(position: &str) -> Option<Board> {
     let mut board: Board = [EMPTY_SQUARE; BOARD_WIDTH * BOARD_HEIGHT];
 
-    let mut fen_iterator = PositionIterator::new(position);
+    let fen_iterator = PositionIterator::new(position);
 
-    let mut row = 7;
-    let mut col = 0;
+    let mut row_1 = 8;
+    let mut col_1 = 0;
 
-    for position in fen_iterator {
-        board[col + (8 * row)] = position;
-        if col == 7 {
-            col = 0;
-            row -= 1;
+    for square in fen_iterator {
+        board[((row_1 - 1) * 8) + col_1] = square;
+
+        col_1 += 1;
+
+        if col_1 == 8 {
+            row_1 -= 1;
+            col_1 = 0;
         }
     }
-
+    if !(row_1 == 0 && col_1 == 0) {
+        return None;
+    }
     Some(board)
+}
+
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_fen_iterator1() {
+        let pos_iter = PositionIterator::new("r2/1NQK");
+
+        let mut parsed_pieces = Vec::with_capacity(7);
+
+        for piece in pos_iter {
+            parsed_pieces.push(piece);
+        }
+
+        let expected_pieces = vec![
+            BLACK_ROOK,
+            EMPTY_SQUARE,
+            EMPTY_SQUARE,
+            EMPTY_SQUARE,
+            WHITE_KNIGHT,
+            WHITE_QUEEN,
+            WHITE_KING,
+        ];
+
+        assert_eq!(parsed_pieces, expected_pieces);
+    }
+
+    #[test]
+    fn test_fen_iterator2() {
+        let mut pos_iter = PositionIterator::new("rRRr/4P");
+
+        let mut vec: Vec<i8> = Vec::with_capacity(9);
+
+        let mut current_len = 0;
+
+        for i in 1..=9 {
+            vec.push(pos_iter.next().unwrap());
+            current_len += 1;
+        }
+        assert_eq!(current_len, 9);
+    }
+
+    #[test]
+    fn test_fen_iterator3() {
+        assert_eq!(PositionIterator::new("r/4P").count(), 6);
+    }
+
+    #[test]
+    fn test_parse_position1() {
+        assert_eq!(parse_position(""), None);
+    }
+
+    #[test]
+    fn test_parse_position2() {
+        assert_eq!(
+            parse_position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"),
+            Some([
+                WHITE_ROOK,
+                WHITE_KNIGHT,
+                WHITE_BISHOP,
+                WHITE_QUEEN,
+                WHITE_KING,
+                WHITE_BISHOP,
+                WHITE_KNIGHT,
+                WHITE_ROOK,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                WHITE_PAWN,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                EMPTY_SQUARE,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_PAWN,
+                BLACK_ROOK,
+                BLACK_KNIGHT,
+                BLACK_BISHOP,
+                BLACK_QUEEN,
+                BLACK_KING,
+                BLACK_BISHOP,
+                BLACK_KNIGHT,
+                BLACK_ROOK,
+            ])
+        );
+    }
+
+    #[test]
+    fn test_parse_position3() {
+        assert_eq!(
+            parse_position("8/8/8/8/8/8/8/8"),
+            Some([EMPTY_SQUARE; BOARD_WIDTH * BOARD_HEIGHT])
+        );
+    }
 }
