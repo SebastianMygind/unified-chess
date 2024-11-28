@@ -4,14 +4,15 @@ use crate::array_engine::{
     WHITE_QUEEN, WHITE_ROOK,
 };
 use std::str::Chars;
+use unified_chess_shared::shared_types::Color;
 
-struct PositionIterator<'a> {
+pub struct PositionIterator<'a> {
     fen_chars: Chars<'a>,
     empty_squares: Option<u32>,
 }
 
 impl<'a> PositionIterator<'a> {
-    fn new(fen: &'a str) -> PositionIterator {
+    pub(crate) fn new(fen: &'a str) -> PositionIterator {
         Self {
             fen_chars: fen.chars(),
             empty_squares: None,
@@ -113,135 +114,16 @@ pub fn parse_position(position: &str) -> Option<Board> {
     Some(board)
 }
 
-mod test {
-    use super::*;
-
-    #[test]
-    fn test_fen_iterator1() {
-        let pos_iter = PositionIterator::new("r2/1NQK");
-
-        let mut parsed_pieces = Vec::with_capacity(7);
-
-        for piece in pos_iter {
-            parsed_pieces.push(piece);
-        }
-
-        let expected_pieces = vec![
-            BLACK_ROOK,
-            EMPTY_SQUARE,
-            EMPTY_SQUARE,
-            EMPTY_SQUARE,
-            WHITE_KNIGHT,
-            WHITE_QUEEN,
-            WHITE_KING,
-        ];
-
-        assert_eq!(parsed_pieces, expected_pieces);
+pub fn parse_side_to_move(fen_part: &str) -> Option<Color> {
+    let side_to_move: Color ;
+    
+    let side_to_move_char = fen_part.chars().next()?;
+    
+    match side_to_move_char {
+        'w' => side_to_move = Color::White,
+        'b' => side_to_move = Color::Black,
+        _ => return None,
     }
-
-    #[test]
-    fn test_fen_iterator2() {
-        let mut pos_iter = PositionIterator::new("rRRr/4P");
-
-        let mut vec: Vec<i8> = Vec::with_capacity(9);
-
-        let mut current_len = 0;
-
-        for i in 1..=9 {
-            vec.push(pos_iter.next().unwrap());
-            current_len += 1;
-        }
-        assert_eq!(current_len, 9);
-    }
-
-    #[test]
-    fn test_fen_iterator3() {
-        assert_eq!(PositionIterator::new("r/4P").count(), 6);
-    }
-
-    #[test]
-    fn test_parse_position1() {
-        assert_eq!(parse_position(""), None);
-    }
-
-    #[test]
-    fn test_parse_position2() {
-        assert_eq!(
-            parse_position("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"),
-            Some([
-                WHITE_ROOK,
-                WHITE_KNIGHT,
-                WHITE_BISHOP,
-                WHITE_QUEEN,
-                WHITE_KING,
-                WHITE_BISHOP,
-                WHITE_KNIGHT,
-                WHITE_ROOK,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                WHITE_PAWN,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                EMPTY_SQUARE,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_PAWN,
-                BLACK_ROOK,
-                BLACK_KNIGHT,
-                BLACK_BISHOP,
-                BLACK_QUEEN,
-                BLACK_KING,
-                BLACK_BISHOP,
-                BLACK_KNIGHT,
-                BLACK_ROOK,
-            ])
-        );
-    }
-
-    #[test]
-    fn test_parse_position3() {
-        assert_eq!(
-            parse_position("8/8/8/8/8/8/8/8"),
-            Some([EMPTY_SQUARE; BOARD_WIDTH * BOARD_HEIGHT])
-        );
-    }
+    
+    Some(side_to_move)
 }

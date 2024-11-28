@@ -1,6 +1,7 @@
 mod fen_parser;
+mod fen_parser_tests;
 
-use crate::array_engine::fen::fen_parser::parse_position;
+use crate::array_engine::fen::fen_parser::{parse_position, parse_side_to_move};
 use crate::array_engine::ChessState;
 use unified_chess_shared::chess_errors::{FenArguments, FenError, FenErrorKind};
 use unified_chess_shared::shared_types::{ChessState as SharedState, Color};
@@ -14,7 +15,12 @@ impl FenConversion for ChessState {
 
         let parsed_position =
             parse_fen_part(&mut fen_state, parse_position, FenArguments::Position)?;
-
+        
+        let parsed_side_to_move = 
+            parse_fen_part(&mut fen_state, parse_side_to_move, FenArguments::SideToMove)?;
+        
+        
+        
         todo!()
     }
 
