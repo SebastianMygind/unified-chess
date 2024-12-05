@@ -1,4 +1,4 @@
-pub mod cli;
+mod cli;
 mod fen;
 mod representation;
 mod svg_handling;

@@ -28,7 +28,7 @@ pub struct RatedMove {
     rating: i32,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub enum PieceType {
     King,
     Queen,
@@ -44,7 +44,7 @@ pub enum Color {
     Black,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 pub struct Piece {
     piece_type: PieceType,
     piece_color: Color,
@@ -55,12 +55,12 @@ const BOARD_HEIGHT: usize = 8;
 pub type Board = [[Option<Piece>; BOARD_HEIGHT]; BOARD_WIDTH];
 
 pub struct ChessState {
-    board: Board,
-    side_to_move: Color,
-    castling_ability: [bool; 4], // WKingside, WQueenside, BKingside, BQueenside
-    en_passant_target_square: Option<Position>,
-    half_move_clock: u32,
-    full_move_counter: u32,
+    pub board: Board,
+    pub side_to_move: Color,
+    pub castling_ability: [bool; 4], // WKingside, WQueenside, BKingside, BQueenside
+    pub en_passant_target_square: Option<Position>,
+    pub half_move_clock: u32,
+    pub full_move_counter: u32,
 }
 
 pub enum ClientMessages {

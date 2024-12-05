@@ -4,7 +4,8 @@ use crate::array_engine::{
     WHITE_QUEEN, WHITE_ROOK,
 };
 use std::str::Chars;
-use unified_chess_shared::shared_types::Color;
+use unified_chess_shared::chess_errors::FenArguments::CastlingAbility;
+use unified_chess_shared::shared_types::{Color, Position};
 
 pub struct PositionIterator<'a> {
     fen_chars: Chars<'a>,
@@ -115,15 +116,81 @@ pub fn parse_position(position: &str) -> Option<Board> {
 }
 
 pub fn parse_side_to_move(fen_part: &str) -> Option<Color> {
-    let side_to_move: Color ;
-    
+    let side_to_move: Color;
+
     let side_to_move_char = fen_part.chars().next()?;
-    
+
     match side_to_move_char {
         'w' => side_to_move = Color::White,
         'b' => side_to_move = Color::Black,
         _ => return None,
     }
-    
+
     Some(side_to_move)
+}
+
+pub fn parse_castling_abilities(fen_part: &str) -> Option<[bool; 4]> {
+    let mut castling_ability = [false; 4];
+
+    for char in fen_part.chars() {
+        match char {
+            'K' => castling_ability[0] = true,
+            'Q' => castling_ability[1] = true,
+            'k' => castling_ability[2] = true,
+            'q' => castling_ability[3] = true,
+            '-' => break,
+            _ => return None,
+        }
+    }
+    Some(castling_ability)
+}
+
+pub fn parse_epawn(fen_part: &str) -> Option<Option<Position>> {
+    let mut position: Position = Position { x: 0, y: 0 };
+
+    let mut chars = fen_part.chars();
+
+    let file = chars.next()?;
+    if file == '-' {
+        return Some(None);
+    }
+
+    position.x = parse_file(file)?;
+
+    let rank = chars.next()?;
+    position.y = parse_rank(rank)?;
+
+    Some(Some(position))
+}
+
+fn parse_file(char: char) -> Option<usize> {
+    Some(match char {
+        'a' => 0,
+        'b' => 1,
+        'c' => 2,
+        'd' => 3,
+        'e' => 4,
+        'f' => 5,
+        'g' => 6,
+        'h' => 7,
+        _ => return None,
+    })
+}
+
+fn parse_rank(char: char) -> Option<usize> {
+    Some(match char {
+        '1' => 0,
+        '2' => 1,
+        '3' => 2,
+        '4' => 3,
+        '5' => 4,
+        '6' => 5,
+        '7' => 6,
+        '8' => 7,
+        _ => return None,
+    })
+}
+
+pub fn parse_string_to_num(fen_part: &str) -> Option<u32> {
+    Some(fen_part.parse().expect("Should be validated"))
 }

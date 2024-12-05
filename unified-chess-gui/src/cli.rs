@@ -1,7 +1,7 @@
 use crate::UserMove;
 use std::io;
 use std::str::SplitWhitespace;
-use unified_chess_engine::array_engine::{ChessBoard, Move, Piece, PieceType, Position};
+use unified_chess_shared::shared_types::{ChessState, Move, Piece, PieceType};
 
 enum Action {
     Quit,
@@ -15,7 +15,7 @@ pub struct UniversalChessInterface {}
 
 impl UniversalChessInterface {
     pub fn run(_args: Vec<String>) {
-        let mut chess_board: ChessBoard = ChessBoard::new();
+        let mut chess_board: ChessBoard = ChessState;
 
         println!("{INTRO_STRING}");
 

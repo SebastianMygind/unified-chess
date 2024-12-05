@@ -1,14 +1,11 @@
-use crate::array_engine::{
-    Board, BLACK_BISHOP, BLACK_KING, BLACK_KNIGHT, BLACK_PAWN, BLACK_QUEEN, BLACK_ROOK,
-    BOARD_HEIGHT, BOARD_WIDTH, EMPTY_SQUARE, WHITE_BISHOP, WHITE_KING, WHITE_KNIGHT, WHITE_PAWN,
-    WHITE_QUEEN, WHITE_ROOK,
-};
-use std::str::Chars;
-use unified_chess_shared::shared_types::Color;
-
 mod test {
-    use super::*;
-    use crate::array_engine::fen::fen_parser::*;
+    use crate::array_engine::fen::fen_parser::parse_position;
+    use crate::array_engine::fen::fen_parser::PositionIterator;
+    use crate::array_engine::{
+        Board, BLACK_BISHOP, BLACK_KING, BLACK_KNIGHT, BLACK_PAWN, BLACK_QUEEN, BLACK_ROOK,
+        BOARD_HEIGHT, BOARD_WIDTH, EMPTY_SQUARE, WHITE_BISHOP, WHITE_KING, WHITE_KNIGHT,
+        WHITE_PAWN, WHITE_QUEEN, WHITE_ROOK,
+    };
 
     #[test]
     fn test_fen_iterator1() {
