@@ -9,15 +9,35 @@ use crate::array_engine::{
     BLACK_BISHOP, BLACK_KING, BLACK_KNIGHT, BLACK_PAWN, BLACK_QUEEN, BLACK_ROOK, EMPTY_SQUARE,
     WHITE_BISHOP, WHITE_KING, WHITE_KNIGHT, WHITE_PAWN, WHITE_QUEEN, WHITE_ROOK,
 };
-use unified_chess_shared::chess_errors::{FenArguments, FenError, FenErrorKind};
+use unified_chess_shared::chess_errors::{FenArguments, FenError, FenErrorKind, MoveError};
 use unified_chess_shared::shared_types::Color::{Black, White};
 use unified_chess_shared::shared_types::{
-    Board, ChessState as SharedState, Color, Piece, PieceType,
+    Board, Color, Move, Piece, PieceType, RatedMove, SharedState,
 };
-use unified_chess_shared::state::{FenConversion, FenState, FenType};
+use unified_chess_shared::state::{ChessEngine, FenState, FenType};
 
-impl FenConversion for ChessState {
-    fn fen_to_state(fen: &str) -> Result<Box<Self>, FenError> {
+impl ChessEngine for ChessState {
+    fn get_legal_moves(&self) -> Vec<Move> {
+        todo!()
+    }
+
+    fn get_best_moves(
+        &self,
+        depth: usize,
+        previous_depth_best_moves: Option<Vec<RatedMove>>,
+    ) -> Vec<RatedMove> {
+        todo!()
+    }
+
+    fn make_move(&mut self, mv: Move) -> Result<(), MoveError> {
+        todo!()
+    }
+
+    fn set_state(&mut self, fen_state: &str) -> Result<(), FenError> {
+        todo!()
+    }
+
+    fn fen_to_state(&self, fen: &str) -> Result<Box<Self>, FenError> {
         let fen_type = Self::is_fen_valid(fen)?;
 
         let mut fen_state: FenState = FenState::new(fen);

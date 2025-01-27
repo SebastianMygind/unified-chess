@@ -1,7 +1,7 @@
 mod fen;
 mod pieces;
 
-use unified_chess_shared::shared_types::ChessState as SharedState;
+use unified_chess_shared::shared_types::SharedState;
 use unified_chess_shared::shared_types::{Color, Move, Piece, Position};
 
 const WHITE_KING: i8 = 1;
@@ -33,7 +33,7 @@ const MAILBOX: [i8; (BOARD_WIDTH + 2) * (BOARD_HEIGHT + 4)] = [
 
 type Board = [i8; BOARD_HEIGHT * BOARD_WIDTH];
 
-struct ChessState {
+pub struct ChessState {
     board: Board,
     side_to_move: Color,
     castling_ability: [bool; 4],

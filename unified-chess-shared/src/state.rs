@@ -1,8 +1,8 @@
 pub mod fen_strings;
 mod fen_validation;
 
-use crate::chess_errors::{FenArguments, FenError, FenErrorKind};
-use crate::shared_types::ChessState;
+use crate::chess_errors::{FenArguments, FenError, FenErrorKind, MoveError};
+use crate::shared_types::{Move, RatedMove, SharedState};
 use crate::state::fen_validation::{
     is_castling_valid, is_en_passant_valid, is_half_move_valid, is_move_counter_valid,
     is_position_valid, is_side_to_move_valid,
@@ -58,14 +58,30 @@ impl<'a> FenState<'a> {
     }
 }
 
-pub trait FenConversion {
-    fn fen_to_state(fen: &str) -> Result<Box<Self>, FenError>;
+pub trait ChessEngine {
+    fn get_legal_moves(&self) -> Vec<Move>;
+
+    fn get_best_moves(
+        &self,
+        depth: usize,
+        previous_depth_best_moves: Option<Vec<RatedMove>>,
+    ) -> Vec<RatedMove>;
+
+    fn make_move(&mut self, mv: Move) -> Result<(), MoveError>;
+
+    fn get_state(&self) -> SharedState {
+        self.state_to_shared_state()
+    }
+
+    fn set_state(&mut self, fen_state: &str) -> Result<(), FenError>;
+
+    fn fen_to_state(&self, fen: &str) -> Result<Box<Self>, FenError>;
 
     fn state_to_fen(&self) -> String;
 
-    fn state_to_shared_state(&self) -> ChessState;
+    fn state_to_shared_state(&self) -> SharedState;
 
-    fn shared_state_to_state(shared_state: &ChessState) -> Self;
+    fn shared_state_to_state(shared_state: &SharedState) -> Self;
 
     fn is_fen_valid(fen: &str) -> Result<FenType, FenError> {
         let mut fen_state = FenState::new(fen);
@@ -148,8 +164,28 @@ mod tests {
 
     struct TestFenConverter;
 
-    impl FenConversion for TestFenConverter {
-        fn fen_to_state(fen: &str) -> Result<Box<Self>, FenError> {
+    impl ChessEngine for TestFenConverter {
+        fn get_legal_moves(&self) -> Vec<Move> {
+            todo!()
+        }
+
+        fn get_best_moves(
+            &self,
+            depth: usize,
+            previous_depth_best_moves: Option<Vec<RatedMove>>,
+        ) -> Vec<RatedMove> {
+            todo!()
+        }
+
+        fn make_move(&mut self, mv: Move) -> Result<(), MoveError> {
+            todo!()
+        }
+
+        fn set_state(&mut self, fen_state: &str) -> Result<(), FenError> {
+            todo!()
+        }
+
+        fn fen_to_state(&self, fen: &str) -> Result<Box<Self>, FenError> {
             todo!()
         }
 
@@ -157,11 +193,11 @@ mod tests {
             todo!()
         }
 
-        fn state_to_shared_state(&self) -> ChessState {
+        fn state_to_shared_state(&self) -> SharedState {
             todo!()
         }
 
-        fn shared_state_to_state(shared_state: &ChessState) -> Self {
+        fn shared_state_to_state(shared_state: &SharedState) -> Self {
             todo!()
         }
     }

@@ -1,4 +1,4 @@
-mod cli;
+pub mod cli;
 mod fen;
 mod representation;
 mod svg_handling;
@@ -11,7 +11,7 @@ use iced::Result;
 use iced::Theme;
 use iced::{self, theme};
 use svg_handling::SvgPieces;
-use unified_chess_shared::shared_types::{ChessState, Piece, PieceType, Position};
+use unified_chess_shared::shared_types::{Piece, PieceType, Position, SharedState};
 
 struct UserMove {
     start_position: Position,
@@ -53,7 +53,7 @@ impl ChessApplication {
 
 pub struct GameState {
     selected_square: Option<Coordinate>,
-    chess_board: ChessState,
+    chess_board: SharedState,
 }
 
 #[derive(Clone, Copy, Debug)]

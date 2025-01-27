@@ -1,5 +1,5 @@
 use std::env;
-use unified_chess_gui::cli::UniversalChessInterface;
+use unified_chess_gui;
 use unified_chess_gui::ChessApplication;
 
 /** Given no arguments the application will run*/
@@ -8,11 +8,11 @@ fn main() {
 
     if args.len() > 1 {
         match args[1].as_str() {
-            "uci-mode" => {
-                UniversalChessInterface::run(args);
+            "cli-mode" => {
+                unified_chess_gui::cli::CommandLineInterface::run();
             }
             _ => {
-                println!("Unknown argument {}", args[1]);
+                println!("Unknown argument: {}", args[1]);
             }
         }
     } else {

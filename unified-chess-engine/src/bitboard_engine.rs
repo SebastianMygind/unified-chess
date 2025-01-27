@@ -1,4 +1,4 @@
-use unified_chess_shared::shared_types::ChessState as SharedState;
+use unified_chess_shared::shared_types::SharedState;
 use unified_chess_shared::shared_types::{Color, Position};
 
 struct Board {
